@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.menu li {
+  @apply text-xl hover:scale-[1.03] hover:bg-gray-400 rounded-md my-2 duration-300;
+}
+
+.side-bar-bg {
+  background: #41295a;
+  background: -webkit-linear-gradient(to right, #2f0743, #41295a);
+  background: linear-gradient(to right, #2f0743, #41295a);
+}
