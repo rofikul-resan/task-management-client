@@ -28,9 +28,11 @@ const AddTask = () => {
     const taskData = {
       name: data?.name,
       title: data?.title,
+      status: data?.status,
       targetTime: targetTime,
       description: data?.description,
     };
+    console.log(taskData);
     fetch("http://localhost:5000/add-task", {
       method: "POST",
       headers: {
@@ -46,24 +48,24 @@ const AddTask = () => {
             icon: "success",
             title: "Task Add successful",
             timer: 2000,
-            showConfirmButton: false,
           });
         } else {
           Swal.fire({
             icon: "error",
             title: "Oops...",
             text: data.message,
+            timer: 2000,
+            showConfirmButton: false,
           });
         }
       });
-    console.log(taskData);
   };
   return (
     <div className="px-6">
       <h1 className="text-3xl font-bold text-center my-6">Add Your new Task</h1>
       <form
         onSubmit={handleSubmit(handleAddTask)}
-        className="bg-base-300 rounded-2xl md:w-7/12 mx-auto shadow-xl space-y-6 shadow-black/60 p-6"
+        className="bg-base-300 rounded-2xl md:w-7/12 mx-auto shadow-xl  shadow-black/60 p-6"
       >
         <div className="form-control w-full ">
           <label className="label">
@@ -87,7 +89,7 @@ const AddTask = () => {
             className="input input-bordered w-full"
           />
         </div>
-        <div className="grid grid-cols-3 justify-center items-center">
+        <div className="grid grid-cols-4 justify-center items-center my-4">
           <h1 className="text-xl  font-semibold items-center  ">
             Target Time :{" "}
           </h1>
@@ -99,13 +101,22 @@ const AddTask = () => {
               className="input input-bordered w-full"
             />
           </div>
-          <div className="form-control  ">
+          <div className="form-control mx-2 ">
             <input
               {...register("minute", { validate: timeValidate })}
               type="number"
               placeholder="minute"
               className="input input-bordered w-full"
             />
+          </div>
+          <div className="form-control w-full ">
+            <select
+              className="input input-bordered w-full"
+              {...register("status", { required: true })}
+            >
+              <option value="pending">Pending</option>
+              <option value="working">Working</option>
+            </select>
           </div>
         </div>
         {errors.hour && (
@@ -126,7 +137,7 @@ const AddTask = () => {
           ></textarea>
         </div>
         <div>
-          <button type="submit" className="btn btn-primary btn-block ">
+          <button type="submit" className="btn btn-primary btn-block mt-4 ">
             Add task
           </button>
         </div>
