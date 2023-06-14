@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import Swal from "sweetalert2";
 
 const AddTask = () => {
   const [targetTime, setTargetTime] = useState(0);
@@ -25,10 +26,36 @@ const AddTask = () => {
       setTargetTime(time + currentTime);
     }
     const taskData = {
+      name: data?.name,
       title: data?.title,
       targetTime: targetTime,
       description: data?.description,
     };
+    fetch("http://localhost:5000/add-task", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(taskData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.insertedId) {
+          reset();
+          Swal.fire({
+            icon: "success",
+            title: "Task Add successful",
+            timer: 2000,
+            showConfirmButton: false,
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: data.message,
+          });
+        }
+      });
     console.log(taskData);
   };
   return (
@@ -38,6 +65,17 @@ const AddTask = () => {
         onSubmit={handleSubmit(handleAddTask)}
         className="bg-base-300 rounded-2xl md:w-7/12 mx-auto shadow-xl space-y-6 shadow-black/60 p-6"
       >
+        <div className="form-control w-full ">
+          <label className="label">
+            <span className="text-xl font-semibold italic">Your Name</span>
+          </label>
+          <input
+            {...register("name", { required: true })}
+            type="text"
+            placeholder="Type here"
+            className="input input-bordered w-full"
+          />
+        </div>
         <div className="form-control w-full ">
           <label className="label">
             <span className="text-xl font-semibold italic">Task Title</span>
