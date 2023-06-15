@@ -16,13 +16,13 @@ const TaskCard = ({ task }) => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5000/tasks/${id}`, {
+        fetch(`https://task-managment-server-peach.vercel.app/tasks/${id}`, {
           method: "DELETE",
         })
           .then((res) => res.json())
           .then((data) => {
             if (data.deletedCount > 0) {
-              refetch;
+              refetch();
               Swal.fire("Deleted!", "Your file has been deleted.", "success");
             }
           });
@@ -30,8 +30,21 @@ const TaskCard = ({ task }) => {
     });
   };
 
-  const handleUpdateStatus = (id) => {
-    console.log(id);
+  const handleUpdateStatus = (id, status) => {
+    fetch(`https://task-managment-server-peach.vercel.app/tasks/${id}`, {
+      method: "PATCH",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ status }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.modifiedCount > 0) {
+          refetch();
+          Swal.fire("Updated!", "Your Task Status has been update.", "success");
+        }
+      });
   };
 
   return (
@@ -55,14 +68,15 @@ const TaskCard = ({ task }) => {
           <div>
             {status === "pending" ? (
               <button
-                onClick={() => handleUpdateStatus(_id)}
+                onClick={() => handleUpdateStatus(_id, "working")}
                 className="btn btn-warning"
               >
                 Start Working
               </button>
             ) : (
               <button
-                onClick={() => handleUpdateStatus(_id)}
+                disabled={status === "completed"}
+                onClick={() => handleUpdateStatus(_id, "completed")}
                 className="btn btn-warning"
               >
                 completed

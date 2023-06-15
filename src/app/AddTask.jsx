@@ -12,7 +12,7 @@ const AddTask = () => {
       description: data?.description,
     };
     console.log(taskData);
-    fetch("http://localhost:5000/add-task", {
+    fetch("https://task-managment-server-peach.vercel.app/add-task", {
       method: "POST",
       headers: {
         "content-type": "application/json",

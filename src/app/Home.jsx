@@ -7,11 +7,25 @@ const Home = () => {
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col">
           <div className="md:hidden">
-            <nav>
-              <h1>Task Management</h1>
-              <div>
-                <NavLink to={"/"}>All task</NavLink>
-                <NavLink to={"/add-task"}>Add task</NavLink>
+            <nav className="flex py-2 justify-between px-3 shadow-md">
+              <h1 className="text-2xl font-bold">Task Management</h1>
+              <div className="text-xl font-semibold flex gap-3">
+                <NavLink
+                  to={"/"}
+                  className={({ isActive }) =>
+                    isActive ? "btn btn-primary btn-sm" : ""
+                  }
+                >
+                  All task
+                </NavLink>
+                <NavLink
+                  to={"/add-task"}
+                  className={({ isActive }) =>
+                    isActive ? "btn btn-primary btn-sm" : ""
+                  }
+                >
+                  Add task
+                </NavLink>
               </div>
             </nav>
           </div>
