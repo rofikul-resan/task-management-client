@@ -1,35 +1,14 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 
 const AddTask = () => {
-  const [targetTime, setTargetTime] = useState(0);
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm();
-  const currentTime = new Date().getTime();
-  const timeValidate = (value) => {
-    if (value < 0) {
-      return "Only positive value can valid";
-    }
-    return;
-  };
+  const { register, handleSubmit, reset } = useForm();
 
   const handleAddTask = (data) => {
-    const minute = +data?.minute || 0;
-    const hour = +data?.hour * 60 || 0;
-    const time = (minute + hour) * 60000;
-    if (time) {
-      setTargetTime(time + currentTime);
-    }
     const taskData = {
       name: data?.name,
       title: data?.title,
       status: data?.status,
-      targetTime: targetTime,
       description: data?.description,
     };
     console.log(taskData);
@@ -89,46 +68,19 @@ const AddTask = () => {
             className="input input-bordered w-full"
           />
         </div>
-        <div className="grid grid-cols-4 justify-center items-center my-4">
-          <h1 className="text-xl  font-semibold items-center  ">
-            Target Time :{" "}
-          </h1>
-          <div className="form-control mx-2 ">
-            <input
-              {...register("hour", { validate: timeValidate })}
-              type="number"
-              placeholder="hour"
-              className="input input-bordered w-full"
-            />
-          </div>
-          <div className="form-control mx-2 ">
-            <input
-              {...register("minute", { validate: timeValidate })}
-              type="number"
-              placeholder="minute"
-              className="input input-bordered w-full"
-            />
-          </div>
-          <div className="form-control w-full ">
-            <select
-              className="input input-bordered w-full"
-              {...register("status", { required: true })}
-            >
-              <option value="pending">Pending</option>
-              <option value="working">Working</option>
-            </select>
-          </div>
+
+        <div className="form-control w-full mb-4 ">
+          <label className="label">
+            <span className="text-xl font-semibold italic">Status</span>
+          </label>
+          <select
+            className="input input-bordered w-full"
+            {...register("status", { required: true })}
+          >
+            <option value="pending">Pending</option>
+            <option value="working">Working</option>
+          </select>
         </div>
-        {errors.hour && (
-          <p className="text-red-700 font-semibold ml-2">
-            {errors.hour.message}
-          </p>
-        )}
-        {errors.minute && (
-          <p className="text-red-700 font-semibold ml-2">
-            {errors.minute.message}
-          </p>
-        )}
         <div>
           <textarea
             {...register("description", { required: true })}

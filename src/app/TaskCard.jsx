@@ -1,27 +1,33 @@
-import moment from "moment";
-import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
+import useAllTask from "../hook/useAllTask";
 
 const TaskCard = ({ task }) => {
-  const [targetTimeStr, setTargetTimeStr] = useState("");
-  const { title, description, targetTime, name, _id, status } = task;
-  const currentTime = moment();
-  const futureTime = moment(targetTime);
-  const differenceInMillie = futureTime.diff(currentTime);
-  const targetEndTime = moment.duration(differenceInMillie);
-  console.log(targetEndTime);
-
-  useEffect(() => {
-    const hours = targetEndTime.hours();
-    const minutes = targetEndTime.minutes();
-    const seconds = targetEndTime.seconds();
-    if (hours < 0 || seconds < 0 || minutes < 0) {
-      return setTargetTimeStr("Time Over");
-    }
-    setTargetTimeStr(`${hours} : ${minutes} : ${seconds}`);
-  }, [targetEndTime]);
+  const { title, description, name, _id, status } = task;
+  const { refetch } = useAllTask();
 
   const handleDeleteTask = (id) => {
-    console.log(id);
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(`http://localhost:5000/tasks/${id}`, {
+          method: "DELETE",
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.deletedCount > 0) {
+              refetch;
+              Swal.fire("Deleted!", "Your file has been deleted.", "success");
+            }
+          });
+      }
+    });
   };
 
   const handleUpdateStatus = (id) => {
@@ -44,18 +50,25 @@ const TaskCard = ({ task }) => {
           {" "}
           <span className="font-semibold italic">Status : </span> {status}
         </p>
-        <p>
-          {" "}
-          <span className="font-semibold italic">End Time : </span>{" "}
-          {targetTimeStr}
-        </p>
+
         <div className="card-actions mt-6 justify-end">
-          <button
-            onClick={() => handleUpdateStatus(_id)}
-            className="btn btn-warning"
-          >
-            completed
-          </button>
+          <div>
+            {status === "pending" ? (
+              <button
+                onClick={() => handleUpdateStatus(_id)}
+                className="btn btn-warning"
+              >
+                Start Working
+              </button>
+            ) : (
+              <button
+                onClick={() => handleUpdateStatus(_id)}
+                className="btn btn-warning"
+              >
+                completed
+              </button>
+            )}
+          </div>
           <button
             onClick={() => handleDeleteTask(_id)}
             className="btn btn-primary"
